@@ -1515,7 +1515,12 @@ void x264_slicetype_analyse( x264_t *h, int intra_minigop )
         h->param.i_scenecut_threshold && scenecut( h, &a, frames, 0, 1, 1, orig_num_frames, i_max_search ) )
     {
         if( frames[1]->i_type == X264_TYPE_AUTO )
-            frames[1]->i_type = X264_TYPE_I;
+        {
+            if( frames[1]->i_frame - h->lookahead->i_last_keyframe >= h->param.i_keyint_min )
+                frames[1]->i_type = X264_TYPE_IDR;
+            else
+                frames[1]->i_type = X264_TYPE_I;
+        }
         return;
     }
 
